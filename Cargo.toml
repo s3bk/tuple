@@ -8,3 +8,12 @@ homepage = "https://github.com/s3bk/tuple"
 repository = "https://github.com/s3bk/tuple"
 keywords = ["tuple"]
 license = "MIT"
+
+[features]
+default = ["impl_num"]
+impl_num = ["num-traits"]
+
+[dependencies]
+num-traits = { version = "0.1.37", optional=true }
+
+

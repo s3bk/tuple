@@ -1,4 +1,3 @@
-
 /*!
 # Examples
 
@@ -18,11 +17,14 @@ assert_eq!(b, T2(21, 12.));
 ```
 #[macro_use]
 extern crate tuple;
+extern crate num_traits;
+
 use tuple::*;
-use std::ops::{Add, Sub, Mul, Div};
+use num_traits::Zero;
+use std::ops::{Add, Sub, Mul};
 use std::fmt::Debug;
 
-trait Ring: Add + Sub + Mul + Div + Debug + Sized {}
+trait Ring: Add + Sub + Mul + Zero + Debug + Sized {}
 
 // The name is up to you
 macro_rules! impl_ring {
@@ -30,7 +32,7 @@ macro_rules! impl_ring {
     ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
     
     // This is expanded for every Tuple type
-        impl<$($T),*> Ring for $Tuple<$($T),*> where $( $T: Ring + 'static ),* {}
+        impl<$($T),*> Ring for $Tuple<$($T),*> where Self: Zero, $( $T: Ring + 'static ),* {}
     
     // this has to match again
     )*)
@@ -44,6 +46,9 @@ impl_tuple!(impl_ring);
 ```
 **/
 
+#[cfg(impl_num)]
+extern crate num_traits;
+
 #[macro_use]
 mod macros;
 
@@ -54,3 +59,9 @@ use std::iter::Iterator;
 use std::fmt;
 
 impl_tuple!(tuple_init);
+
+#[cfg(impl_num)]
+#[macro_use]
+mod impl_num;
+#[cfg(impl_num)]
+impl_tuple!(impl_num);
