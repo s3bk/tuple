@@ -1,0 +1,10 @@
+[package]
+name = "tuple"
+version = "0.1.0"
+authors = ["Sebastian Köln <sebk@rynx.org>"]
+description = "Element wise operations on tuples"
+documentation = "https://docs.rs/tuple"
+homepage = "https://github.com/s3bk/tuple"
+repository = "https://github.com/s3bk/tuple"
+keywords = ["tuple"]
+license = "MIT"
