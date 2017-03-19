@@ -31,8 +31,8 @@ macro_rules! impl_ring {
     // This line is defined by this crate and can't be changed
     ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
     
-    // This is expanded for every Tuple type
-        impl<$($T),*> Ring for $Tuple<$($T),*> where Self: Zero, $( $T: Ring + 'static ),* {}
+        // This is expanded for every Tuple type
+        impl<$($T),*> Ring for $Tuple<$($T),*> where Self: Zero, $( $T: Ring ),* {}
     
     // this has to match again
     )*)

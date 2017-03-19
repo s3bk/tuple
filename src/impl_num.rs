@@ -1,6 +1,6 @@
 macro_rules! impl_num {
     ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
-        impl<$($T),*> num::Zero for $Tuple<$($T),*> where $( $T: num::Zero + 'static ),* {
+        impl<$($T),*> num::Zero for $Tuple<$($T),*> where $( $T: num::Zero ),* {
             fn zero() -> Self {
                 $Tuple( $( $T::zero() ),* )
             }
