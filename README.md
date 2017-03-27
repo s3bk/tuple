@@ -12,7 +12,7 @@ use tuple::*;
 ```
 
 ## Element-wise operations
-```
+```rust
 let a = T2(3, 4) + T2(5, 4);
 assert_eq!(a, T2(8, 8));
 
