@@ -1,11 +1,13 @@
 /*!
 # Examples
 
-```rust
+```
 extern crate tuple;
 use tuple::*;
 # fn main() {}
 ```
+All following operations are defined on the `T1` .. `Tn` type of this crate,
+as well for the normal tuple types.
 
 ## Element-wise operations
 
@@ -36,6 +38,42 @@ assert_eq!(T3(1, 2, 3)[2], 3);
 
 assert_eq!(T2(7, 8).get(1), Some(&8));
 assert_eq!(T2(7, 8).get(2), None);
+# }
+```
+
+## Joining two tuples
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+let a = T2(1, 2);
+let b = T3(3, 4, 5);
+assert_eq!(a.join(b), T5(1, 2, 3, 4, 5));
+# }
+```
+
+## Splitting a tuple in two parts
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+let a = T4(1, 2, 3, 4);
+let (b, c): (T1<_>, _) = a.split(); // split needs a type hint for the left side
+assert_eq!(b, T1(1));
+assert_eq!(c, T3(2, 3, 4));
+# }
+```
+
+## Rotate and Reverse
+
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+let a = T4((), 2, 3, true);
+assert_eq!(a.rot_l(),   T4(2, 3, true, ())); // rotate left
+assert_eq!(a.rot_r(),   T4(true, (), 2, 3)); // rotate right
+assert_eq!(a.reverse(), T4(true, 3, 2, ())); // reverse
 # }
 ```
 
@@ -71,13 +109,15 @@ impl_tuple!(impl_ring);
 # fn main() {}
 ```
 **/
-
 #![feature(associated_consts)]
+#![feature(trace_macros)]
 #![no_std]
+#![allow(non_camel_case_types)]
 
-#[cfg(impl_num)]
+#[cfg(feature="impl_num")]
 extern crate num_traits;
-
+#[cfg(feature="impl_num")]
+use num_traits as num;
 //extern crate itertools;
 
 
@@ -117,20 +157,35 @@ impl<'a, T> Iterator for Elements<&'a T> where T: TupleElements {
     }
 }
 
-macro_rules! A { ($a:ident, $b:ident) => ($a) }
-macro_rules! a { ($a:expr, $b:expr) => ($a) }
-macro_rules! Rev {
-    (@ $a:ident; $(  $b:ident),*                 ) => (     ($a $(,$b) *              ) );
-    (@ $a:ident  $(, $b:ident) * ; $($c:ident),* ) => ( Rev!(@  $( $b),* ; $a $(,$c)* ) );
-    (  $a:ident                                  ) => (      $a                         );
-    (  $a:ident  $(, $b:ident) *                 ) => ( Rev!(@  $( $b),* ; $a         ) );
+/// Allows to join/concatenate two tuples
+pub trait OpJoin<RHS> {
+    type Output;
+    fn join(self, rhs: RHS) -> Self::Output;
 }
-macro_rules! rev {
-    (@ $a:expr; $(  $b:expr),*                ) => (     ($a $(,$b) *              ) );
-    (@ $a:expr  $(, $b:expr) * ; $($c:expr),* ) => ( rev!(@  $( $b),* ; $a $(,$c)* ) );
-    (  $a:expr                                ) => (      $a                         );
-    (  $a:expr  $(, $b:expr) *                ) => ( rev!(@  $( $b),* ; $a         ) );
+
+pub trait OpSplit<L> {
+    type R;
+    fn split(self) -> (L, Self::R);
 }
+
+pub trait OpRotateLeft {
+    type Output;
+    /// rotate left. The previously first element is now the first.
+    fn rot_l(self) -> Self::Output;
+}
+pub trait OpRotateRight {
+    type Output;
+    /// rotate right. The previously last element is now the last.
+    fn rot_r(self) -> Self::Output;
+}
+pub trait OpReverse {
+    type Output;
+    /// reverse the elements.
+    fn reverse(self) -> Self::Output;
+}
+
+#[macro_use]
+mod utils;
 
 #[macro_export]
 macro_rules! impl_tuple {
@@ -154,15 +209,16 @@ impl_tuple!(m_init);
 mod m_ops;
 impl_tuple!(m_ops);
 
-#[cfg(impl_num)]
+#[cfg(feature="impl_num")]
 #[macro_use]
 mod m_num;
-#[cfg(impl_num)]
+#[cfg(feature="impl_num")]
 impl_tuple!(m_num);
 
 #[macro_use]
 mod m_tuple;
 impl_tuple!(m_tuple);
+m_join!();
 
 /*
 use itertools::tuple_impl::TupleCollect;

@@ -5,8 +5,8 @@ macro_rules! m_num {
                 $Tuple( $( $T::zero() ),* )
             }
             fn is_zero(&self) -> bool {
-                $Tuple( $( self.$idx.is_zero() )&&* )
+                $( self.$idx.is_zero() )&&*
             }
         }
-    )*)
+    )*)   
 }
