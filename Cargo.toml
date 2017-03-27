@@ -1,6 +1,6 @@
 [package]
 name = "tuple"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Sebastian Köln <sebk@rynx.org>"]
 description = "Element wise operations on tuples"
 documentation = "https://docs.rs/tuple"
@@ -14,6 +14,4 @@ default = ["impl_num"]
 impl_num = ["num-traits"]
 
 [dependencies]
-num-traits = { version = "0.1.37", optional=true }
-
-
+num-traits = { version = "0.1.*", optional=true }

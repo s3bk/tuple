@@ -1,24 +1,46 @@
 /*!
 # Examples
 
-```
+```rust
 extern crate tuple;
 use tuple::*;
+# fn main() {}
+```
+
+## Element-wise operations
+
+```
+# extern crate tuple;
+# use tuple::*;
 # fn main() {
 let a = T2(3, 4) + T2(5, 4);
 assert_eq!(a, T2(8, 8));
 
-// Tuples where all items have the same type can be indexed
-assert_eq!(T3(1, 2, 3)[2], 3);
-assert_eq!(a[1], 8);
-
 let b = T2(3u32, 4.0f32) * T2(7, 3.0);
 assert_eq!(b, T2(21, 12.));
+# }
+```
 
+## Indexing
+
+This is implemented in the [`TupleElements`](trait.TupleElements.html) trait.
+
+Indexing works as expected and panics when out of bounds.
+There are also `get` and `get_mut` functions that return `Option<&T>` and `Option<&mut T>`.
+
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+assert_eq!(T3(1, 2, 3)[2], 3);
+
+assert_eq!(T2(7, 8).get(1), Some(&8));
+assert_eq!(T2(7, 8).get(2), None);
 # }
 ```
 
 ## Adding a Trait
+
 ```
 #[macro_use]
 extern crate tuple;
@@ -46,14 +68,11 @@ macro_rules! impl_ring {
 // actually implement it!
 impl_tuple!(impl_ring);
 
-# fn main() {
-# }
+# fn main() {}
 ```
 **/
 
 #![feature(associated_consts)]
-#![feature(trace_macros)]
-#![feature(try_from)] 
 #![no_std]
 
 #[cfg(impl_num)]
@@ -64,10 +83,9 @@ extern crate num_traits;
 
 // this defines the macro that w
 
-use core::ops::{Add, Sub, Mul, Div, Index, IndexMut};
+use core::ops;
 use core::iter::Iterator;
 use core::fmt;
-use core::convert::TryFrom;
 
 pub struct Elements<T> {
     tuple:  T,
@@ -131,6 +149,10 @@ macro_rules! impl_tuple {
 #[macro_use]
 mod m_init;
 impl_tuple!(m_init);
+
+#[macro_use]
+mod m_ops;
+impl_tuple!(m_ops);
 
 #[cfg(impl_num)]
 #[macro_use]

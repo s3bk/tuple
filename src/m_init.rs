@@ -18,30 +18,6 @@ macro_rules! m_init {
                 ( $(&self.$idx ),* ).fmt(f)
             }
         }
-        impl<$($T),*> Add for $Tuple<$($T),*> where $( $T: Add ),* {
-            type Output = $Tuple<$($T::Output),*>;
-            fn add(self, rhs: Self) -> Self::Output {
-                $Tuple( $(self.$idx + rhs.$idx ),* )
-            }
-        }
-        impl<$($T),*> Sub for $Tuple<$($T),*> where $( $T: Sub ),* {
-            type Output = $Tuple<$($T::Output),*>;
-            fn sub(self, rhs: Self) -> Self::Output {
-                $Tuple( $(self.$idx - rhs.$idx ),* )
-            }
-        }
-        impl<$($T),*> Mul for $Tuple<$($T),*> where $( $T: Mul ),* {
-            type Output = $Tuple<$($T::Output),*>;
-            fn mul(self, rhs: Self) -> Self::Output {
-                $Tuple( $(self.$idx * rhs.$idx ),* )
-            }
-        }
-        impl<$($T),*> Div for $Tuple<$($T),*> where $( $T: Div ),* {
-            type Output = $Tuple<$($T::Output),*>;
-            fn div(self, rhs: Self) -> Self::Output {
-                $Tuple( $(self.$idx / rhs.$idx ),* )
-            }
-        }
         impl<$($T),*> From<u16> for $Tuple<$($T),*> where $( $T: From<u16> ),* {
             fn from(value: u16) -> Self {
                 $Tuple( $( $T::from(value) ),* )
@@ -73,23 +49,6 @@ macro_rules! m_init {
                 match index {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
-                }
-            }
-        }
-        impl<T> Index<usize> for $Tuple<$(A!(T,$T)),*> {
-            type Output = T;
-            fn index(&self, index: usize) -> &T {
-                match index {
-                 $( $idx => &self.$idx, )*
-                    _ => panic!("index {} out of bounds. len is {}.", index, Self::N)
-                }
-            }
-        }
-        impl<T> IndexMut<usize> for $Tuple<$(A!(T,$T)),*> {
-            fn index_mut(&mut self, index: usize) -> &mut T {
-                match index {
-                 $( $idx => &mut self.$idx, )*
-                    _ => panic!("index {} out of bounds. len is {}.", index, Self::N)
                 }
             }
         }
