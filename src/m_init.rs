@@ -13,6 +13,7 @@ macro_rules! m_init {
                 $( self.$idx == other.$idx)&&*
             }
         }
+        impl<$($T),*> Eq for $Tuple<$($T),*> where $( $T: Eq ),* {}
         impl<$($T),*> fmt::Debug for $Tuple<$($T),*> where $( $T: fmt::Debug ),* {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 ( $(&self.$idx ),* ).fmt(f)
@@ -29,25 +30,6 @@ macro_rules! m_init {
             fn next(&mut self) -> Option<Self::Item> {
                 match ( $(self.$idx.next(), )* ) {
                     ( $( Some($T) ,)* ) => Some($Tuple( $($T),* )),
-                    _ => None
-                }
-            }
-        }
-        impl<T> TupleElements for $Tuple<$(A!(T,$T)),*> {
-            type Element = T;
-            const N: usize = $(a!(1, $idx)+)* 0;
-            fn elements(&self) -> Elements<&Self> {
-                Elements { tuple: self, index: 0 }
-            }
-            fn get(&self, index: usize) -> Option<&T> {
-                match index {
-                 $( $idx => Some(&self.$idx), )*
-                    _ => None
-                }
-            }
-            fn get_mut(&mut self, index: usize) -> Option<&mut T> {
-                match index {
-                 $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
             }

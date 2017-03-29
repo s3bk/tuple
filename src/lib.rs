@@ -41,6 +41,23 @@ assert_eq!(T2(7, 8).get(2), None);
 # }
 ```
 
+## Iterate over the elements of a tuple
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+for i in T2(1, 2).elements() {
+    println!("{}", i);
+}
+
+let mut b = T3(3, 4, 5);
+for i in b.elements_mut() {
+    *i += 1;
+}
+assert_eq!(b.elements().sum::<u32>(), 15);
+# }
+```
+
 ## Joining two tuples
 ```
 # extern crate tuple;
@@ -136,8 +153,11 @@ pub trait TupleElements {
     type Element;
     const N: usize;
     
-    /// returns an Iterator over the elements of the tuple
+    /// returns an Iterator over references to the elements of the tuple
     fn elements(&self) -> Elements<&Self>;
+    
+    /// returns an Iterator over mutable references to elements of the tuple
+    fn elements_mut(&mut self) -> Elements<&mut Self>;
     
     /// attempt to access the n-th element
     fn get(&self, n: usize) -> Option<&Self::Element>;
@@ -154,6 +174,20 @@ impl<'a, T> Iterator for Elements<&'a T> where T: TupleElements {
             self.index += 1;
         }
         t
+    }
+}
+impl<'a, T> Iterator for Elements<&'a mut T> where T: TupleElements {
+    type Item = &'a mut T::Element;
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(t) = self.tuple.get_mut(self.index) {
+            self.index += 1;
+            
+            // we only hand out one reference to each item
+            // and that lifetime is limited to the Elements struct
+            Some(unsafe { &mut *(t as *mut T::Element) })
+        } else { 
+            None
+        }
     }
 }
 
