@@ -1,5 +1,5 @@
 macro_rules! m_ops {
-    ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> ops::Add for $Tuple<$($T),*> where $( $T: ops::Add ),* {
             type Output = $Tuple<$($T::Output),*>;
             fn add(self, rhs: Self) -> Self::Output {

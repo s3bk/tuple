@@ -111,7 +111,7 @@ trait Ring: Add + Sub + Mul + Zero + Debug + Sized {}
 // The name is up to you
 macro_rules! impl_ring {
     // This line is defined by this crate and can't be changed
-    ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
 
         // This is expanded for every Tuple type
         impl<$($T),*> Ring for $Tuple<$($T),*> where Self: Zero, $( $T: Ring ),* {}
@@ -149,7 +149,9 @@ pub struct Elements<T> {
     index:  usize
 }
 
-pub trait TupleElements {
+/// This trais is marked as unsafe, due to the requirement of the get_mut method,
+/// which is required work as an injective map of index -> element
+pub unsafe trait TupleElements {
     type Element;
     const N: usize;
     
@@ -163,6 +165,7 @@ pub trait TupleElements {
     fn get(&self, n: usize) -> Option<&Self::Element>;
     
     /// attempt to access the n-th element mutablbly.
+    /// This function shall not return the same data for two different indices.
     fn get_mut(&mut self, n: usize) -> Option<&mut Self::Element>;
 }
 
@@ -221,17 +224,24 @@ pub trait OpReverse {
 #[macro_use]
 mod utils;
 
+// for i in range(1, 17):
+//     print("T{i} {{ {inner} }}".format(i=i, inner=", ".join("{a}.{n}".format(a=string.ascii_uppercase[j], n=j) for j in range(i))))
+
 #[macro_export]
 macro_rules! impl_tuple {
     ($def:ident) => ($def!(
-    T1 { 0 -> A }
-    T2 { 0 -> A, 1 -> B }
-    T3 { 0 -> A, 1 -> B, 2 -> C }
-    T4 { 0 -> A, 1 -> B, 2 -> C, 3 -> D }
-    T5 { 0 -> A, 1 -> B, 2 -> C, 3 -> D, 4 -> E }
-    T6 { 0 -> A, 1 -> B, 2 -> C, 3 -> D, 4 -> E, 5 -> F }
-    T7 { 0 -> A, 1 -> B, 2 -> C, 3 -> D, 4 -> E, 5 -> F, 6 -> G }
-    T8 { 0 -> A, 1 -> B, 2 -> C, 3 -> D, 4 -> E, 5 -> F, 6 -> G, 7 -> H }
+T1 { A.0 }
+T2 { A.0, B.1 }
+T3 { A.0, B.1, C.2 }
+T4 { A.0, B.1, C.2, D.3 }
+T5 { A.0, B.1, C.2, D.3, E.4 }
+T6 { A.0, B.1, C.2, D.3, E.4, F.5 }
+T7 { A.0, B.1, C.2, D.3, E.4, F.5, G.6 }
+T8 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7 }
+T9 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8 }
+T10 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9 }
+T11 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10 }
+T12 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11 }
     );)
 }
 

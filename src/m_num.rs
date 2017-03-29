@@ -1,5 +1,5 @@
 macro_rules! m_num {
-    ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> num::Zero for $Tuple<$($T),*> where $( $T: num::Zero ),* {
             fn zero() -> Self {
                 $Tuple( $( $T::zero() ),* )

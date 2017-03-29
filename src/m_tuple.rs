@@ -1,5 +1,5 @@
 macro_rules! m_tuple {
-    ($($Tuple:ident { $($idx:tt -> $T:ident),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> From<($($T,)*)> for $Tuple<$($T),*> {
             fn from(t: ($($T,)*)) -> Self {
                 $Tuple( $( t.$idx ),* )
@@ -10,7 +10,7 @@ macro_rules! m_tuple {
                 ( $( self.$idx, )* )
             }
         }
-        impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
+        unsafe impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
             fn elements(&self) -> Elements<&Self> {
@@ -32,7 +32,7 @@ macro_rules! m_tuple {
                 }
             }
         }
-        impl<T> TupleElements for ($(A!(T,$T),)*) {
+        unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
             fn elements(&self) -> Elements<&Self> {
