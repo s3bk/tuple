@@ -21,10 +21,13 @@ Supported Operations so far:
  - `iter`
    - `Iterator` Iterate over all elements at once (assuming they implement `Iterator`).
      The iterations stops once one or more elements return `None`.
- - `conv`
+ - `convert`
    - `From` and `Into` their tuple equivalent.
+   - `From` and `Into` their array equivalent.
+   - `TryFrom` slice
  - other
    - `rev`: reverse the elements
    - `rot_l` and `rot_r`: rotate elements
    - `split`: make two separate tuples out of one
    - `join`: turn two tuples into one
+   - `map`: apply a function to each element and return the resulting tuple

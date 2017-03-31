@@ -1,6 +1,7 @@
 macro_rules! m_tuple {
     ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
         impl<T> $Tuple<$(A!(T,$T),)*> {
+            /// apply function `f` to each element and return the resulting tuple
             pub fn map<F, O>(self, f: F) -> $Tuple<$(A!(O,$T),)*> where F: Fn(T) -> O {
                 $Tuple($(f(self.$idx)),*)
             }
