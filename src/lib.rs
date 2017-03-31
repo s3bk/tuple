@@ -20,6 +20,8 @@ assert_eq!(a, T2(8, 8));
 
 let b = T2(3u32, 4.0f32) * T2(7, 3.0);
 assert_eq!(b, T2(21, 12.));
+
+assert_eq!(T3(1, 2, 3).map(|x| x * 2), T3(2, 4, 6));
 # }
 ```
 
@@ -58,6 +60,24 @@ assert_eq!(b.elements().sum::<u32>(), 15);
 # }
 ```
 
+## Conversions
+
+```
+# #![feature(try_from)]
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+use std::convert::TryFrom;
+// slice to tuple
+assert_eq!(T3::try_from(&[1, 2, 3, 4, 5]), Ok(T3(1, 2, 3)));
+
+// tuple to and from array
+let t = T3(1, 2, 3);
+let a: [u8; 3] = t.into();
+let t: T3<_, _, _> = a.into();
+# }
+
+```
 ## Joining two tuples
 ```
 # extern crate tuple;
@@ -128,8 +148,10 @@ impl_tuple!(impl_ring);
 **/
 #![feature(associated_consts)]
 #![feature(trace_macros)]
+#![feature(try_from)] 
+#![feature(slice_patterns)]
 #![no_std]
-#![allow(non_camel_case_types)]
+#![allow(non_camel_case_types, non_snake_case)]
 
 #[cfg(feature="impl_num")]
 extern crate num_traits;
@@ -143,6 +165,7 @@ use num_traits as num;
 use core::ops;
 use core::iter::Iterator;
 use core::fmt;
+use core::convert;
 
 pub struct Elements<T> {
     tuple:  T,
@@ -167,6 +190,12 @@ pub unsafe trait TupleElements {
     /// attempt to access the n-th element mutablbly.
     /// This function shall not return the same data for two different indices.
     fn get_mut(&mut self, n: usize) -> Option<&mut Self::Element>;
+    
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum ConvertError {
+    OutOfBounds
 }
 
 impl<'a, T> Iterator for Elements<&'a T> where T: TupleElements {
@@ -253,6 +282,10 @@ impl_tuple!(m_init);
 mod m_ops;
 impl_tuple!(m_ops);
 
+#[macro_use]
+mod m_convert;
+impl_tuple!(m_convert);
+
 #[cfg(feature="impl_num")]
 #[macro_use]
 mod m_num;
@@ -263,6 +296,7 @@ impl_tuple!(m_num);
 mod m_tuple;
 impl_tuple!(m_tuple);
 m_join!();
+
 
 /*
 use itertools::tuple_impl::TupleCollect;

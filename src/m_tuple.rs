@@ -1,13 +1,8 @@
 macro_rules! m_tuple {
     ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
-        impl<$($T),*> From<($($T,)*)> for $Tuple<$($T),*> {
-            fn from(t: ($($T,)*)) -> Self {
-                $Tuple( $( t.$idx ),* )
-            }
-        }
-        impl<$($T),*> Into<($($T,)*)> for $Tuple<$($T),*> {
-            fn into(self) -> ($($T,)*) {
-                ( $( self.$idx, )* )
+        impl<T> $Tuple<$(A!(T,$T),)*> {
+            pub fn map<F, O>(self, f: F) -> $Tuple<$(A!(O,$T),)*> where F: Fn(T) -> O {
+                $Tuple($(f(self.$idx)),*)
             }
         }
         unsafe impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
