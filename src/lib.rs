@@ -193,6 +193,22 @@ pub unsafe trait TupleElements {
     
 }
 
+/**
+splat: copy the argument into all elements
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+let a = T4::splat(42);
+assert_eq!(a,   T4(42, 42, 42, 42));
+# }
+```
+*/
+pub trait Splat<T> {
+    fn splat(T) -> Self;
+}
+
+
 #[derive(Debug, Eq, PartialEq)]
 pub enum ConvertError {
     OutOfBounds

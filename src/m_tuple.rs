@@ -28,6 +28,11 @@ macro_rules! m_tuple {
                 }
             }
         }
+        impl<T> Splat<T> for $Tuple<$(A!(T,$T),)*> where T: Clone {
+            fn splat(t: T) -> Self {
+                $Tuple( $( a!(t.clone(), $T) ),* )
+            }
+        }
         unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
@@ -48,6 +53,11 @@ macro_rules! m_tuple {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
+            }
+        }
+        impl<T> Splat<T> for ($(A!(T,$T),)*) where T: Clone {
+            fn splat(t: T) -> Self {
+                ( $( a!(t.clone(), $T), )* )
             }
         }
         impl<$($T),*> OpRotateLeft for $Tuple<$($T),*> {
