@@ -1,9 +1,19 @@
+use super::*;
+
 macro_rules! m_tuple {
     ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
         impl<T> $Tuple<$(A!(T,$T),)*> {
             /// apply function `f` to each element and return the resulting tuple
             pub fn map<F, O>(self, f: F) -> $Tuple<$(A!(O,$T),)*> where F: Fn(T) -> O {
                 $Tuple($(f(self.$idx)),*)
+            }
+        }
+        impl<$($T),*> $Tuple<$(Option<$T>),*> {
+            pub fn collect(self) -> Option< $Tuple<$($T),*> > {
+                match self {
+                    $Tuple( $( Some($T) ),* ) => Some( $Tuple( $( $T ),* ) ),
+                    _ => None
+                }
             }
         }
         unsafe impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
@@ -26,6 +36,13 @@ macro_rules! m_tuple {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
+            }
+            fn from_iter<I>(mut iter: I) -> Option<Self> where I: Iterator<Item=Self::Element> {
+             $( let $T = match iter.next() {
+                    Some(v) => v,
+                    None => return None
+                }; )*
+                Some($Tuple($($T),*))
             }
         }
         impl<T> Splat<T> for $Tuple<$(A!(T,$T),)*> where T: Clone {
@@ -53,6 +70,13 @@ macro_rules! m_tuple {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
+            }
+            fn from_iter<I>(mut iter: I) -> Option<Self> where I: Iterator<Item=Self::Element> {
+             $( let $T = match iter.next() {
+                    Some(v) => v,
+                    None => return None
+                }; )*
+                Some(($($T,)*))
             }
         }
         impl<T> Splat<T> for ($(A!(T,$T),)*) where T: Clone {
@@ -178,3 +202,6 @@ macro_rules! m_join(
     );
     )
 );
+
+impl_tuple!(m_tuple);
+m_join!();

@@ -1,6 +1,5 @@
 macro_rules! m_init {
     ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
-        pub struct $Tuple<$($T),*>($(pub $T),*);
         impl<$($T),*> Clone for $Tuple<$($T),*> where $( $T: Clone ),* {
             fn clone(&self) -> Self {
                 $Tuple( $( self.$idx.clone() ),* )
@@ -16,7 +15,9 @@ macro_rules! m_init {
         impl<$($T),*> Eq for $Tuple<$($T),*> where $( $T: Eq ),* {}
         impl<$($T),*> fmt::Debug for $Tuple<$($T),*> where $( $T: fmt::Debug ),* {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                ( $(&self.$idx ),* ).fmt(f)
+                f.debug_tuple(stringify!($Tuple))
+             $( .field(&self.$idx) )*
+                .finish()
             }
         }
         impl<$($T),*> From<u16> for $Tuple<$($T),*> where $( $T: From<u16> ),* {
@@ -36,3 +37,8 @@ macro_rules! m_init {
         }
     )*)
 }
+
+use core::iter::Iterator;
+use core::fmt;
+use super::*;
+impl_tuple!(m_init);

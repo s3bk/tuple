@@ -10,3 +10,7 @@ macro_rules! m_num {
         }
     )*)   
 }
+
+use super::*;
+use num;
+impl_tuple!(m_num);

@@ -1,4 +1,9 @@
 /*!
+
+# Feature flags
+ - `impl_num` add support for traits from the num crate. (default on)
+ - `impl_simd` add support for simd types. (default off)
+
 # Examples
 
 ```
@@ -150,6 +155,7 @@ impl_tuple!(impl_ring);
 #![feature(trace_macros)]
 #![feature(try_from)] 
 #![feature(slice_patterns)]
+#![feature(cfg_target_feature)]
 #![no_std]
 #![allow(non_camel_case_types, non_snake_case)]
 
@@ -159,13 +165,8 @@ extern crate num_traits;
 use num_traits as num;
 //extern crate itertools;
 
-
-// this defines the macro that w
-
-use core::ops;
-use core::iter::Iterator;
-use core::fmt;
-use core::convert;
+#[cfg(feature="impl_simd")]
+extern crate simd;
 
 pub struct Elements<T> {
     tuple:  T,
@@ -174,7 +175,7 @@ pub struct Elements<T> {
 
 /// This trais is marked as unsafe, due to the requirement of the get_mut method,
 /// which is required work as an injective map of index -> element
-pub unsafe trait TupleElements {
+pub unsafe trait TupleElements: Sized {
     type Element;
     const N: usize;
     
@@ -191,10 +192,12 @@ pub unsafe trait TupleElements {
     /// This function shall not return the same data for two different indices.
     fn get_mut(&mut self, n: usize) -> Option<&mut Self::Element>;
     
+    fn from_iter<I>(iter: I) -> Option<Self> where I: Iterator<Item=Self::Element>;
 }
 
 /**
 splat: copy the argument into all elements
+
 ```
 # extern crate tuple;
 # use tuple::*;
@@ -268,10 +271,11 @@ pub trait OpReverse {
 
 #[macro_use]
 mod utils;
-
-// for i in range(1, 17):
-//     print("T{i} {{ {inner} }}".format(i=i, inner=", ".join("{a}.{n}".format(a=string.ascii_uppercase[j], n=j) for j in range(i))))
-
+/*  python3:
+import string
+for i in range(1, 17):
+    print("T{i} {{ {inner} }}".format(i=i, inner=", ".join("{a}.{n}".format(a=string.ascii_uppercase[j], n=j) for j in range(i))))
+*/
 #[macro_export]
 macro_rules! impl_tuple {
     ($def:ident) => ($def!(
@@ -287,32 +291,33 @@ T9 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8 }
 T10 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9 }
 T11 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10 }
 T12 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11 }
+T13 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12 }
+T14 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13 }
+T15 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13, O.14 }
+T16 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13, O.14, P.15 }
     );)
 }
+macro_rules! init {
+    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
+        pub struct $Tuple<$($T),*>($(pub $T),*);
+    )*)
+}
+impl_tuple!(init);
 
-#[macro_use]
 mod m_init;
-impl_tuple!(m_init);
-
-#[macro_use]
 mod m_ops;
-impl_tuple!(m_ops);
-
-#[macro_use]
 mod m_convert;
-impl_tuple!(m_convert);
 
 #[cfg(feature="impl_num")]
-#[macro_use]
 mod m_num;
-#[cfg(feature="impl_num")]
-impl_tuple!(m_num);
 
-#[macro_use]
 mod m_tuple;
-impl_tuple!(m_tuple);
-m_join!();
 
+#[cfg(all(feature="impl_simd", any(target_arch="x86", target_arch="x86_64")))]
+#[macro_use]
+mod m_simd;
+//#[cfg(feature="impl_simd")]
+//impl_tuple!(m_simd);
 
 /*
 use itertools::tuple_impl::TupleCollect;

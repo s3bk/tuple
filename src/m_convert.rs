@@ -36,3 +36,7 @@ macro_rules! m_convert {
         }
     )*)
 }
+
+use core::convert;
+use super::*;
+impl_tuple!(m_convert);
