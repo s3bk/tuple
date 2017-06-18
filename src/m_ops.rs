@@ -1,5 +1,5 @@
 macro_rules! m_ops_base {
-    ( $Tuple:ident { $($T:ident . $idx:tt),* } : $op:ident . $fn:ident ) =>
+    ( $Tuple:ident { $($T:ident .$t:ident . $idx:tt),* } : $op:ident . $fn:ident ) =>
     (
         impl<$($T),*> $op for $Tuple<$($T),*> where $( $T: $op ),* {
             type Output = $Tuple<$($T::Output),*>;
@@ -16,7 +16,7 @@ macro_rules! m_ops_base {
     )
 }
 macro_rules! m_ops_base_assign {
-    ( $Tuple:ident { $($T:ident . $idx:tt),* } : $op:ident . $fn:ident ) =>
+    ( $Tuple:ident { $($T:ident .$t:ident . $idx:tt),* } : $op:ident . $fn:ident ) =>
     (
         impl<$($T),*> $op for $Tuple<$($T),*> where $( $T: $op ),* {
             fn $fn(&mut self, rhs: Self) {
@@ -31,19 +31,19 @@ macro_rules! m_ops_base_assign {
     )
 }
 macro_rules! m_ops_all {
-    ( $Tuple:ident { $($T:ident . $idx:tt),* } :
+    ( $Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } :
         $op:ident.$fn:ident, $op_a:ident.$fn_a:ident) =>
     ( 
-        m_ops_base!( $Tuple { $($T . $idx),* } : $op.$fn );
-        m_ops_base_assign!( $Tuple { $($T . $idx),* } : $op_a.$fn_a );
+        m_ops_base!( $Tuple { $($T . $t . $idx),* } : $op.$fn );
+        m_ops_base_assign!( $Tuple { $($T . $t . $idx),* } : $op_a.$fn_a );
     )
 }
 macro_rules! m_ops {
-    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
-        m_ops_all!( $Tuple { $($T . $idx),* } : Add.add, AddAssign.add_assign );
-        m_ops_all!( $Tuple { $($T . $idx),* } : Sub.sub, SubAssign.sub_assign );
-        m_ops_all!( $Tuple { $($T . $idx),* } : Mul.mul, MulAssign.mul_assign );
-        m_ops_all!( $Tuple { $($T . $idx),* } : Div.div, DivAssign.div_assign );
+    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+        m_ops_all!( $Tuple { $($T . $t . $idx),* } : Add.add, AddAssign.add_assign );
+        m_ops_all!( $Tuple { $($T . $t . $idx),* } : Sub.sub, SubAssign.sub_assign );
+        m_ops_all!( $Tuple { $($T . $t . $idx),* } : Mul.mul, MulAssign.mul_assign );
+        m_ops_all!( $Tuple { $($T . $t . $idx),* } : Div.div, DivAssign.div_assign );
         
         impl<$($T),*> Neg for $Tuple<$($T),*> where $( $T: Neg ),* {
             type Output = $Tuple<$($T::Output),*>;

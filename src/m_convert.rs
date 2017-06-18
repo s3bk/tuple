@@ -1,5 +1,5 @@
 macro_rules! m_convert {
-    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> convert::From<($($T,)*)> for $Tuple<$($T),*> {
             fn from(t: ($($T,)*)) -> Self {
                 $Tuple( $( t.$idx ),* )
@@ -31,6 +31,17 @@ macro_rules! m_convert {
                     Ok($Tuple( $( slice[$idx].clone() ),* ))
                 } else {
                     Err(ConvertError::OutOfBounds)
+                }
+            }
+        }
+        impl<$($T,$t,)*> convert::TryFrom<$Tuple<$($t,)*>> for $Tuple<$($T,)*>
+        where $( $T: convert::TryFrom<$t> ),*
+        {
+            type Error = $Tuple<$(Option<$T::Error>,)*>;
+            fn try_from(value: $Tuple<$($t,)*>) -> Result<Self, Self::Error> {
+                match ($( $T::try_from(value.$idx), )* ) {
+                    ($( Ok($t), )*) => Ok($Tuple( $( $t ),* )),
+                    ($( $t, )*) => Err($Tuple( $( $t.err() ),* ))
                 }
             }
         }

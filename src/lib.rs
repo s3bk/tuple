@@ -136,7 +136,7 @@ trait Ring: Add + Sub + Mul + Zero + Debug + Sized {}
 // The name is up to you
 macro_rules! impl_ring {
     // This line is defined by this crate and can't be changed
-    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
 
         // This is expanded for every Tuple type
         impl<$($T),*> Ring for $Tuple<$($T),*> where Self: Zero, $( $T: Ring ),* {}
@@ -274,31 +274,31 @@ mod utils;
 /*  python3:
 import string
 for i in range(1, 17):
-    print("T{i} {{ {inner} }}".format(i=i, inner=", ".join("{a}.{n}".format(a=string.ascii_uppercase[j], n=j) for j in range(i))))
+    print("T{i} {{ {inner} }}".format(i=i, inner=", ".join("{a}.{b}.{n}".format(a=string.ascii_uppercase[j],b=string.ascii_lowercase[j],n=j) for j in range(i))))
 */
 #[macro_export]
 macro_rules! impl_tuple {
     ($def:ident) => ($def!(
-T1 { A.0 }
-T2 { A.0, B.1 }
-T3 { A.0, B.1, C.2 }
-T4 { A.0, B.1, C.2, D.3 }
-T5 { A.0, B.1, C.2, D.3, E.4 }
-T6 { A.0, B.1, C.2, D.3, E.4, F.5 }
-T7 { A.0, B.1, C.2, D.3, E.4, F.5, G.6 }
-T8 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7 }
-T9 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8 }
-T10 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9 }
-T11 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10 }
-T12 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11 }
-T13 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12 }
-T14 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13 }
-T15 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13, O.14 }
-T16 { A.0, B.1, C.2, D.3, E.4, F.5, G.6, H.7, I.8, J.9, K.10, L.11, M.12, N.13, O.14, P.15 }
+T1 { A.a.0 }
+T2 { A.a.0, B.b.1 }
+T3 { A.a.0, B.b.1, C.c.2 }
+T4 { A.a.0, B.b.1, C.c.2, D.d.3 }
+T5 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4 }
+T6 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5 }
+T7 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6 }
+T8 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7 }
+T9 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8 }
+T10 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9 }
+T11 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10 }
+T12 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10, L.l.11 }
+T13 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10, L.l.11, M.m.12 }
+T14 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10, L.l.11, M.m.12, N.n.13 }
+T15 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10, L.l.11, M.m.12, N.n.13, O.o.14 }
+T16 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.10, L.l.11, M.m.12, N.n.13, O.o.14, P.p.15 }
     );)
 }
 macro_rules! init {
-    ($($Tuple:ident { $($T:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         pub struct $Tuple<$($T),*>($(pub $T),*);
     )*)
 }
@@ -326,3 +326,18 @@ mod impl_itertools;
 trace_macros!(true);
 impl_tuple!(impl_itertools);
 */
+
+/** 
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+assert_eq!(tuple("hello world".split(' ')), Some(("hello", "world")));
+# }
+```
+**/
+pub fn tuple<T, I>(iter: I) -> Option<T> where
+    T: TupleElements, I: Iterator<Item=T::Element>
+{
+    T::from_iter(iter)
+}
