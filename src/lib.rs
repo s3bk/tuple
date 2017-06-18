@@ -65,6 +65,18 @@ assert_eq!(b.elements().sum::<u32>(), 15);
 # }
 ```
 
+### Consume a tuple and iterate over the elements
+```
+# extern crate tuple;
+# use tuple::*;
+# fn main() {
+for i in T2(String::from("hello"), String::from("world")).into_elements() {
+    let s: String = i; // it's really a String
+    println!("{}", s);
+}
+# }
+```
+
 ## Conversions
 
 ```
@@ -74,7 +86,7 @@ assert_eq!(b.elements().sum::<u32>(), 15);
 # fn main() {
 use std::convert::TryFrom;
 // slice to tuple
-assert_eq!(T3::try_from(&[1, 2, 3, 4, 5]), Ok(T3(1, 2, 3)));
+assert_eq!(T3::try_from(&[1u8, 2, 3, 4, 5][..]), Ok(T3(1, 2, 3)));
 
 // tuple to and from array
 let t = T3(1, 2, 3);
@@ -168,13 +180,30 @@ use num_traits as num;
 #[cfg(feature="impl_simd")]
 extern crate simd;
 
+use core::{ptr, mem};
+
 pub struct Elements<T> {
     tuple:  T,
     index:  usize
 }
+impl<T> Elements<T> {
+    pub fn new(t: T) -> Elements<T> {
+        Elements { tuple: t, index: 0 }
+    }
+}
+pub struct IntoElements<T: TupleElements> {
+    tuple:  Option<T>,
+    index:  usize
+}
+impl<T: TupleElements> IntoElements<T> {
+    pub fn new(t: T) -> IntoElements<T> {
+        IntoElements { tuple: Some(t), index: 0 }
+    }
+}
 
 /// This trais is marked as unsafe, due to the requirement of the get_mut method,
 /// which is required work as an injective map of index -> element
+/// A tuple must not have a Drop implentation.
 pub unsafe trait TupleElements: Sized {
     type Element;
     const N: usize;
@@ -185,6 +214,9 @@ pub unsafe trait TupleElements: Sized {
     /// returns an Iterator over mutable references to elements of the tuple
     fn elements_mut(&mut self) -> Elements<&mut Self>;
     
+    // return an Iterator over the elements of the tuple
+    fn into_elements(self) -> IntoElements<Self>;
+    
     /// attempt to access the n-th element
     fn get(&self, n: usize) -> Option<&Self::Element>;
     
@@ -194,6 +226,7 @@ pub unsafe trait TupleElements: Sized {
     
     fn from_iter<I>(iter: I) -> Option<Self> where I: Iterator<Item=Self::Element>;
 }
+
 
 /**
 splat: copy the argument into all elements
@@ -239,6 +272,31 @@ impl<'a, T> Iterator for Elements<&'a mut T> where T: TupleElements {
         } else { 
             None
         }
+    }
+}
+impl<T> Iterator for IntoElements<T> where T: TupleElements {
+    type Item = T::Element;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.tuple.as_mut().unwrap().get(self.index) {
+            Some(p) => {
+                self.index += 1; // mark as taken
+                let v = unsafe { ptr::read(p) }; // read it
+                Some(v)
+            },
+            None => None
+        }
+    }
+}
+impl<T> Drop for IntoElements<T> where T: TupleElements {
+    fn drop(&mut self) {
+        let mut tuple = self.tuple.take().unwrap();
+        // only drop remaining elements
+        for i in self.index .. T::N {
+            unsafe {
+                ptr::drop_in_place(tuple.get_mut(i).unwrap());
+            }
+        }
+        mem::forget(tuple);
     }
 }
 

@@ -20,10 +20,13 @@ macro_rules! m_tuple {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
             fn elements(&self) -> Elements<&Self> {
-                Elements { tuple: self, index: 0 }
+                Elements::new(self)
             }
             fn elements_mut(&mut self) -> Elements<&mut Self> {
-                Elements { tuple: self, index: 0 }
+                Elements::new(self)
+            }
+            fn into_elements(self) -> IntoElements<Self> {
+                IntoElements::new(self)
             }
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
@@ -54,10 +57,13 @@ macro_rules! m_tuple {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
             fn elements(&self) -> Elements<&Self> {
-                Elements { tuple: self, index: 0 }
+                Elements::new(self)
             }
             fn elements_mut(&mut self) -> Elements<&mut Self> {
-                Elements { tuple: self, index: 0 }
+                Elements::new(self)
+            }
+            fn into_elements(self) -> IntoElements<Self> {
+                IntoElements::new(self)
             }
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
