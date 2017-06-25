@@ -182,11 +182,9 @@ use num_traits as num;
 extern crate simd;
 
 #[cfg(feature="impl_serde")]
-#[macro_use] extern crate serde_derive;
-#[cfg(feature="impl_serde")]
 extern crate serde;
 
-use core::{ptr, mem};
+use core::{ptr, mem, fmt};
 
 pub struct Elements<T> {
     tuple:  T,
@@ -363,11 +361,6 @@ T16 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.
 }
 macro_rules! init {
     ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
-        #[cfg(feature="impl_serde")]
-        #[derive(Serialize, Deserialize)]
-        pub struct $Tuple<$($T),*>($(pub $T),*);
-        
-        #[cfg(not(feature="impl_serde"))]
         pub struct $Tuple<$($T),*>($(pub $T),*);
     )*)
 }
@@ -385,8 +378,12 @@ mod m_tuple;
 #[cfg(all(feature="impl_simd", any(target_arch="x86", target_arch="x86_64")))]
 #[macro_use]
 mod m_simd;
+
 //#[cfg(feature="impl_simd")]
 //impl_tuple!(m_simd);
+
+#[cfg(feature="impl_serde")]
+mod m_serde;
 
 /*
 use itertools::tuple_impl::TupleCollect;
