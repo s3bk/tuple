@@ -182,6 +182,8 @@ use num_traits as num;
 extern crate simd;
 
 #[cfg(feature="impl_serde")]
+#[macro_use] extern crate serde_derive;
+#[cfg(feature="impl_serde")]
 extern crate serde;
 
 use core::{ptr, mem};
