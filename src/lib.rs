@@ -3,6 +3,7 @@
 # Feature flags
  - `impl_num` add support for traits from the num crate. (default on)
  - `impl_simd` add support for simd types. (default off)
+ - `impl_serde` impl Serialize and Deserialize from serde
 
 # Examples
 
@@ -179,6 +180,9 @@ use num_traits as num;
 
 #[cfg(feature="impl_simd")]
 extern crate simd;
+
+#[cfg(feature="impl_serde")]
+extern crate serde;
 
 use core::{ptr, mem};
 
@@ -357,6 +361,11 @@ T16 { A.a.0, B.b.1, C.c.2, D.d.3, E.e.4, F.f.5, G.g.6, H.h.7, I.i.8, J.j.9, K.k.
 }
 macro_rules! init {
     ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+        #[cfg(feature="impl_serde")]
+        #[derive(Serialize, Deserialize)]
+        pub struct $Tuple<$($T),*>($(pub $T),*);
+        
+        #[cfg(not(feature="impl_serde"))]
         pub struct $Tuple<$($T),*>($(pub $T),*);
     )*)
 }
