@@ -369,6 +369,7 @@ impl_tuple!(init);
 mod m_init;
 mod m_ops;
 mod m_convert;
+mod m_array;
 
 #[cfg(feature="impl_num")]
 mod m_num;
