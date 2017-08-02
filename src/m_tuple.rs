@@ -19,15 +19,6 @@ macro_rules! m_tuple {
         unsafe impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
-            fn elements(&self) -> Elements<&Self> {
-                Elements::new(self)
-            }
-            fn elements_mut(&mut self) -> Elements<&mut Self> {
-                Elements::new(self)
-            }
-            fn into_elements(self) -> IntoElements<Self> {
-                IntoElements::new(self)
-            }
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
                  $( $idx => Some(&self.$idx), )*
@@ -56,15 +47,6 @@ macro_rules! m_tuple {
         unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
-            fn elements(&self) -> Elements<&Self> {
-                Elements::new(self)
-            }
-            fn elements_mut(&mut self) -> Elements<&mut Self> {
-                Elements::new(self)
-            }
-            fn into_elements(self) -> IntoElements<Self> {
-                IntoElements::new(self)
-            }
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
                  $( $idx => Some(&self.$idx), )*

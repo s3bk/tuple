@@ -191,7 +191,7 @@ pub struct Elements<T> {
     index:  usize
 }
 impl<T> Elements<T> {
-    pub fn new(t: T) -> Elements<T> {
+    fn new(t: T) -> Elements<T> {
         Elements { tuple: t, index: 0 }
     }
 }
@@ -200,26 +200,27 @@ pub struct IntoElements<T: TupleElements> {
     index:  usize
 }
 impl<T: TupleElements> IntoElements<T> {
-    pub fn new(t: T) -> IntoElements<T> {
+    fn new(t: T) -> IntoElements<T> {
         IntoElements { tuple: Some(t), index: 0 }
     }
 }
 
 /// This trais is marked as unsafe, due to the requirement of the get_mut method,
-/// which is required work as an injective map of index -> element
-/// A tuple must not have a Drop implentation.
+/// which is required work as an injective map of `index -> element`
+///
+/// A tuple must not have a `Drop` implementation.
 pub unsafe trait TupleElements: Sized {
     type Element;
     const N: usize;
     
     /// returns an Iterator over references to the elements of the tuple
-    fn elements(&self) -> Elements<&Self>;
+    fn elements(&self) -> Elements<&Self> { Elements::new(self) }
     
     /// returns an Iterator over mutable references to elements of the tuple
-    fn elements_mut(&mut self) -> Elements<&mut Self>;
+    fn elements_mut(&mut self) -> Elements<&mut Self> { Elements::new(self) }
     
     // return an Iterator over the elements of the tuple
-    fn into_elements(self) -> IntoElements<Self>;
+    fn into_elements(self) -> IntoElements<Self> { IntoElements::new(self) }
     
     /// attempt to access the n-th element
     fn get(&self, n: usize) -> Option<&Self::Element>;
