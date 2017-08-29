@@ -43,6 +43,10 @@ macro_rules! m_tuple {
             fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
                 $Tuple($(f(self.$idx)),*)
             }
+            fn map_mut<F>(self, mut f: F) -> Self::Output where F: FnMut(T) -> U {
+                $Tuple($(f(self.$idx)),*)
+            }
+
         }
 
         unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
@@ -76,6 +80,9 @@ macro_rules! m_tuple {
         impl<T, U> Map<U> for ($(A!(T,$T),)*) {
             type Output = ($(A!(U,$T),)*);
             fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
+                ($(f(self.$idx),)*)
+            }
+            fn map_mut<F>(self, mut f: F) -> Self::Output where F: FnMut(T) -> U {
                 ($(f(self.$idx),)*)
             }
         }

@@ -229,13 +229,14 @@ pub unsafe trait TupleElements: Sized {
     fn get_mut(&mut self, n: usize) -> Option<&mut Self::Element>;
     
     fn from_iter<I>(iter: I) -> Option<Self> where I: Iterator<Item=Self::Element>;
-
-
 }
 
 pub trait Map<T>: TupleElements {
     type Output: TupleElements;
+    /// apply a function to each element and return the result
     fn map<F>(self, f: F) -> Self::Output where F: Fn(Self::Element) -> <Self::Output as TupleElements>::Element;
+    /// same as `map`, but accepts a FnMut
+    fn map_mut<F>(self, f: F) -> Self::Output where F: FnMut(Self::Element) -> <Self::Output as TupleElements>::Element;
 }
 
 /**

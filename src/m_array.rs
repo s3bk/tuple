@@ -48,6 +48,11 @@ macro_rules! m_array {
                 let [$($t),*] = { self };
                 [$(f($t)),*]
             }
+            fn map_mut<F>(self, mut f: F) -> Self::Output where F: FnMut(T) -> U {
+                let [$($t),*] = { self };
+                [$(f($t)),*]
+            }
+
         }
 
     )* )
