@@ -234,9 +234,9 @@ pub unsafe trait TupleElements: Sized {
 pub trait Map<T>: TupleElements {
     type Output: TupleElements;
     /// apply a function to each element and return the result
-    fn map<F>(self, f: F) -> Self::Output where F: Fn(Self::Element) -> <Self::Output as TupleElements>::Element;
+    fn map<F>(self, f: F) -> Self::Output where F: Fn(Self::Element) -> T;
     /// same as `map`, but accepts a FnMut
-    fn map_mut<F>(self, f: F) -> Self::Output where F: FnMut(Self::Element) -> <Self::Output as TupleElements>::Element;
+    fn map_mut<F>(self, f: F) -> Self::Output where F: FnMut(Self::Element) -> T;
 }
 
 /**
