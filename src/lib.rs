@@ -165,7 +165,6 @@ impl_tuple!(impl_ring);
 ```
 **/
 
-#![feature(trace_macros)]
 #![feature(try_from)] 
 #![feature(slice_patterns)]
 #![feature(cfg_target_feature)]
