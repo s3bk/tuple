@@ -164,7 +164,7 @@ impl_tuple!(impl_ring);
 # fn main() {}
 ```
 **/
-#![feature(associated_consts)]
+
 #![feature(trace_macros)]
 #![feature(try_from)] 
 #![feature(slice_patterns)]
@@ -230,8 +230,14 @@ pub unsafe trait TupleElements: Sized {
     fn get_mut(&mut self, n: usize) -> Option<&mut Self::Element>;
     
     fn from_iter<I>(iter: I) -> Option<Self> where I: Iterator<Item=Self::Element>;
+
+
 }
 
+pub trait Map<T>: TupleElements {
+    type Output: TupleElements;
+    fn map<F>(self, f: F) -> Self::Output where F: Fn(Self::Element) -> <Self::Output as TupleElements>::Element;
+}
 
 /**
 splat: copy the argument into all elements

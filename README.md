@@ -25,9 +25,11 @@ Supported Operations so far:
    - `From` and `Into` their tuple equivalent.
    - `From` and `Into` their array equivalent.
    - `TryFrom` slice
+ - `Map<T>` trait
+    - `map`: apply a function to each element and return the resulting tuple
  - other
    - `rev`: reverse the elements
    - `rot_l` and `rot_r`: rotate elements
    - `split`: make two separate tuples out of one
    - `join`: turn two tuples into one
-   - `map`: apply a function to each element and return the resulting tuple
+

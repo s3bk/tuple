@@ -2,12 +2,6 @@ use super::*;
 
 macro_rules! m_tuple {
     ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
-        impl<T> $Tuple<$(A!(T,$T),)*> {
-            /// apply function `f` to each element and return the resulting tuple
-            pub fn map<F, O>(self, f: F) -> $Tuple<$(A!(O,$T),)*> where F: Fn(T) -> O {
-                $Tuple($(f(self.$idx)),*)
-            }
-        }
         impl<$($T),*> $Tuple<$(Option<$T>),*> {
             pub fn collect(self) -> Option< $Tuple<$($T),*> > {
                 match self {
@@ -44,6 +38,13 @@ macro_rules! m_tuple {
                 $Tuple( $( a!(t.clone(), $T) ),* )
             }
         }
+        impl<T, U> Map<U> for $Tuple<$(A!(T,$T)),*> {
+            type Output = $Tuple<$(A!(U,$T)),*>;
+            fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
+                $Tuple($(f(self.$idx)),*)
+            }
+        }
+
         unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
@@ -72,6 +73,13 @@ macro_rules! m_tuple {
                 ( $( a!(t.clone(), $T), )* )
             }
         }
+        impl<T, U> Map<U> for ($(A!(T,$T),)*) {
+            type Output = ($(A!(U,$T),)*);
+            fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
+                ($(f(self.$idx),)*)
+            }
+        }
+
         impl<$($T),*> OpRotateLeft for $Tuple<$($T),*> {
             type Output = Rot_l!(x_ty_ident, $Tuple; $($T,)*);
             fn rot_l(self) -> Self::Output {

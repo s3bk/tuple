@@ -36,6 +36,20 @@ macro_rules! m_array {
                 Some([$($T,)*])
             }
         }
+        impl<T> Splat<T> for [T; $(a!(1, $idx)+)* 0] where T: Clone {
+            fn splat(t: T) -> Self {
+                [$(a!(t.clone(), $idx)),*]
+            }
+        }
+        
+        impl<T, U> Map<U> for [T; $(a!(1, $idx)+)* 0] {
+            type Output = [U; $(a!(1, $idx)+)* 0];
+            fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
+                let [$($t),*] = { self };
+                [$(f($t)),*]
+            }
+        }
+
     )* )
 }
 impl_tuple!(m_array);
