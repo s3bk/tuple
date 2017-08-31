@@ -20,6 +20,11 @@ macro_rules! m_init {
                 .finish()
             }
         }
+        impl<$($T),*> Default for $Tuple<$($T),*> where $( $T: Default ),* {
+            fn default() -> Self {
+                $Tuple( $( $T::default() ),* )
+            }
+        }
         impl<$($T),*> From<u16> for $Tuple<$($T),*> where $( $T: From<u16> ),* {
             fn from(value: u16) -> Self {
                 $Tuple( $( $T::from(value) ),* )
