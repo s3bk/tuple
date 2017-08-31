@@ -13,18 +13,21 @@ macro_rules! m_tuple {
         unsafe impl<T> TupleElements for $Tuple<$(A!(T,$T),)*> {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
+            #[inline(always)]
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
                  $( $idx => Some(&self.$idx), )*
                     _ => None
                 }
             }
+            #[inline(always)]
             fn get_mut(&mut self, index: usize) -> Option<&mut T> {
                 match index {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
             }
+            #[inline(always)]
             fn from_iter<I>(mut iter: I) -> Option<Self> where I: Iterator<Item=Self::Element> {
              $( let $T = match iter.next() {
                     Some(v) => v,
@@ -34,15 +37,18 @@ macro_rules! m_tuple {
             }
         }
         impl<T> Splat<T> for $Tuple<$(A!(T,$T),)*> where T: Clone {
+            #[inline(always)]
             fn splat(t: T) -> Self {
                 $Tuple( $( a!(t.clone(), $T) ),* )
             }
         }
         impl<T, U> Map<U> for $Tuple<$(A!(T,$T)),*> {
             type Output = $Tuple<$(A!(U,$T)),*>;
+            #[inline(always)]
             fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
                 $Tuple($(f(self.$idx)),*)
             }
+            #[inline(always)]
             fn map_mut<F>(self, mut f: F) -> Self::Output where F: FnMut(T) -> U {
                 $Tuple($(f(self.$idx)),*)
             }
@@ -52,18 +58,21 @@ macro_rules! m_tuple {
         unsafe impl<T> TupleElements for ($(A!(T,$T),)*) {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;
+            #[inline(always)]
             fn get(&self, index: usize) -> Option<&T> {
                 match index {
                  $( $idx => Some(&self.$idx), )*
                     _ => None
                 }
             }
+            #[inline(always)]
             fn get_mut(&mut self, index: usize) -> Option<&mut T> {
                 match index {
                  $( $idx => Some(&mut self.$idx), )*
                     _ => None
                 }
             }
+            #[inline(always)]
             fn from_iter<I>(mut iter: I) -> Option<Self> where I: Iterator<Item=Self::Element> {
              $( let $T = match iter.next() {
                     Some(v) => v,
@@ -73,15 +82,18 @@ macro_rules! m_tuple {
             }
         }
         impl<T> Splat<T> for ($(A!(T,$T),)*) where T: Clone {
+            #[inline(always)]
             fn splat(t: T) -> Self {
                 ( $( a!(t.clone(), $T), )* )
             }
         }
         impl<T, U> Map<U> for ($(A!(T,$T),)*) {
             type Output = ($(A!(U,$T),)*);
+            #[inline(always)]
             fn map<F>(self, f: F) -> Self::Output where F: Fn(T) -> U {
                 ($(f(self.$idx),)*)
             }
+            #[inline(always)]
             fn map_mut<F>(self, mut f: F) -> Self::Output where F: FnMut(T) -> U {
                 ($(f(self.$idx),)*)
             }
@@ -89,36 +101,42 @@ macro_rules! m_tuple {
 
         impl<$($T),*> OpRotateLeft for $Tuple<$($T),*> {
             type Output = Rot_l!(x_ty_ident, $Tuple; $($T,)*);
+            #[inline(always)]
             fn rot_l(self) -> Self::Output {
                 rot_l!(x_ty_expr, $Tuple; $(self.$idx,)*)
             }
         }
         impl<$($T),*> OpRotateLeft for ($($T,)*) {
             type Output = Rot_l!(x_tuple_ident; $($T,)*);
+            #[inline(always)]
             fn rot_l(self) -> Self::Output {
                 rot_l!(x_tuple_expr; $(self.$idx,)*)
             }
         }
         impl<$($T),*> OpRotateRight for $Tuple<$($T),*> {
             type Output = Rot_r!(x_ty_ident, $Tuple; $($T,)*);
+            #[inline(always)]
             fn rot_r(self) -> Self::Output {
                 rot_r!(x_ty_expr, $Tuple; $(self.$idx,)*)
             }
         }
         impl<$($T),*> OpRotateRight for ($($T,)*) {
             type Output = Rot_r!(x_tuple_ident; $($T,)*);
+            #[inline(always)]
             fn rot_r(self) -> Self::Output {
                 rot_r!(x_tuple_expr; $(self.$idx,)*)
             }
         }
         impl<$($T),*> OpReverse for $Tuple<$($T),*> {
             type Output = Rev!(x_ty_ident, $Tuple; $($T,)*);
+            #[inline(always)]
             fn reverse(self) -> Self::Output {
                 rev!(x_ty_expr, $Tuple; $(self.$idx,)*)
             }
         }
         impl<$($T),*> OpReverse for ($($T,)*) {
             type Output = Rev!(x_tuple_ident; $($T,)*);
+            #[inline(always)]
             fn reverse(self) -> Self::Output {
                 rev!(x_tuple_expr; $(self.$idx,)*)
             }
@@ -132,6 +150,7 @@ macro_rules! impl_join {
     ) => ( $(
         impl<$($l,)* $($r),*> OpJoin<$R<$($r),*>> for $L<$($l),*> {
             type Output = $O<$($l,)* $($r),*>;
+            #[inline(always)]
             fn join(self, rhs: $R<$($r),*>) -> Self::Output {
                 let $L($($l),*) = self;
                 let $R($($r),*) = rhs;
@@ -140,6 +159,7 @@ macro_rules! impl_join {
         }
         impl<$($l,)* $($r),*> OpJoin<($($r,)*)> for ($($l,)*) {
             type Output = ($($l,)* $($r),*);
+            #[inline(always)]
             fn join(self, rhs: ($($r,)*)) -> Self::Output {
                 let ($($l,)*) = self;
                 let ($($r,)*) = rhs;
@@ -148,6 +168,7 @@ macro_rules! impl_join {
         }
         impl<$($l,)* $($r),*> OpSplit<$L<$($l),*>> for $O<$($l,)* $($r),*> {
             type R = $R<$($r),*>;
+            #[inline(always)]
             fn split(self) -> ($L<$($l),*>, Self::R) {
                 let $O($($l,)* $($r),*) = self;
                 ( $L($($l),*), $R($($r),*) )
@@ -155,6 +176,7 @@ macro_rules! impl_join {
         }
         impl<$($l,)* $($r),*> OpSplit<($($l),*)> for ($($l,)* $($r),*) {
             type R = ($($r),*);
+            #[inline(always)]
             fn split(self) -> (($($l),*), Self::R) {
                 let ($($l,)* $($r),*) = self;
                 ( ($($l),*), ($($r),*) )

@@ -3,12 +3,14 @@ macro_rules! m_ops_base {
     (
         impl<$($T),*> $op for $Tuple<$($T),*> where $( $T: $op ),* {
             type Output = $Tuple<$($T::Output),*>;
+            #[inline(always)]
             fn $fn(self, rhs: Self) -> Self::Output {
                 $Tuple( $(self.$idx.$fn( rhs.$idx ) ),* )
             }
         }
         impl<T> $op<T> for $Tuple<$(A!(T, $T)),*> where T: $op + Clone {
             type Output = $Tuple<$(<A!(T, $T) as $op>::Output),*>;
+            #[inline(always)]
             fn $fn(self, rhs: T) -> Self::Output {
                 $Tuple( $(self.$idx.$fn( rhs.clone() ) ),* )
             }
@@ -19,11 +21,13 @@ macro_rules! m_ops_base_assign {
     ( $Tuple:ident { $($T:ident .$t:ident . $idx:tt),* } : $op:ident . $fn:ident ) =>
     (
         impl<$($T),*> $op for $Tuple<$($T),*> where $( $T: $op ),* {
+            #[inline(always)]
             fn $fn(&mut self, rhs: Self) {
              $( self.$idx.$fn(rhs.$idx); )*
             }
         }
         impl<T> $op<T> for $Tuple<$(A!(T, $T)),*> where T: $op + Clone {
+            #[inline(always)]
             fn $fn(&mut self, rhs: T) {
              $( self.$idx.$fn(rhs.clone()); )*
             }
@@ -47,12 +51,14 @@ macro_rules! m_ops {
         
         impl<$($T),*> Neg for $Tuple<$($T),*> where $( $T: Neg ),* {
             type Output = $Tuple<$($T::Output),*>;
+            #[inline(always)]
             fn neg(self) -> Self::Output {
                 $Tuple( $(self.$idx.neg()),* )
             }
         }
         impl<T> Index<usize> for $Tuple<$(A!(T,$T)),*> {
             type Output = T;
+            #[inline(always)]
             fn index(&self, index: usize) -> &T {
                 match index {
                  $( $idx => &self.$idx, )*
@@ -61,6 +67,7 @@ macro_rules! m_ops {
             }
         }
         impl<T> IndexMut<usize> for $Tuple<$(A!(T,$T)),*> {
+            #[inline(always)]
             fn index_mut(&mut self, index: usize) -> &mut T {
                 match index {
                  $( $idx => &mut self.$idx, )*

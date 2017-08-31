@@ -10,11 +10,13 @@ macro_rules! impl_one {
     ( $Tuple:ident : $name:ident : $n:tt $e:ident ) =>
     (
         impl Splat<$e> for $name {
+            #[inline(always)]
             fn splat(e: $e) -> Self {
                 $name::splat(e)
             }
         }
         impl From<$name> for repeat_ident!($n x_ty_ident; $Tuple; $e) {
+            #[inline(always)]
             fn from(x: $name) -> Self {
                 let mut arr = [$e::default(); $n];
                 x.store(&mut arr, 0);
