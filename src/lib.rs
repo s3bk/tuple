@@ -190,6 +190,7 @@ pub struct Elements<T> {
     index:  usize
 }
 impl<T> Elements<T> {
+    #[inline(always)]
     fn new(t: T) -> Elements<T> {
         Elements { tuple: t, index: 0 }
     }
@@ -199,6 +200,7 @@ pub struct IntoElements<T: TupleElements> {
     index:  usize
 }
 impl<T: TupleElements> IntoElements<T> {
+    #[inline(always)]
     fn new(t: T) -> IntoElements<T> {
         IntoElements { tuple: Some(t), index: 0 }
     }
@@ -213,12 +215,15 @@ pub unsafe trait TupleElements: Sized {
     const N: usize;
     
     /// returns an Iterator over references to the elements of the tuple
+    #[inline(always)]
     fn elements(&self) -> Elements<&Self> { Elements::new(self) }
     
     /// returns an Iterator over mutable references to elements of the tuple
+    #[inline(always)]
     fn elements_mut(&mut self) -> Elements<&mut Self> { Elements::new(self) }
     
     // return an Iterator over the elements of the tuple
+    #[inline(always)]
     fn into_elements(self) -> IntoElements<Self> { IntoElements::new(self) }
     
     /// attempt to access the n-th element
@@ -263,6 +268,7 @@ pub enum ConvertError {
 
 impl<'a, T> Iterator for Elements<&'a T> where T: TupleElements {
     type Item = &'a T::Element;
+    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
         let t = self.tuple.get(self.index);
         if let Some(_) = t {
@@ -273,6 +279,7 @@ impl<'a, T> Iterator for Elements<&'a T> where T: TupleElements {
 }
 impl<'a, T> Iterator for Elements<&'a mut T> where T: TupleElements {
     type Item = &'a mut T::Element;
+    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
         if let Some(t) = self.tuple.get_mut(self.index) {
             self.index += 1;
@@ -287,6 +294,7 @@ impl<'a, T> Iterator for Elements<&'a mut T> where T: TupleElements {
 }
 impl<T> Iterator for IntoElements<T> where T: TupleElements {
     type Item = T::Element;
+    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
         match self.tuple.as_mut().unwrap().get(self.index) {
             Some(p) => {
@@ -299,6 +307,7 @@ impl<T> Iterator for IntoElements<T> where T: TupleElements {
     }
 }
 impl<T> Drop for IntoElements<T> where T: TupleElements {
+    #[inline(always)]
     fn drop(&mut self) {
         let mut tuple = self.tuple.take().unwrap();
         // only drop remaining elements
