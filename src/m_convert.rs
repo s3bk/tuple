@@ -26,6 +26,17 @@ macro_rules! m_convert {
                 [ $($T),* ]
             }
         }
+        impl<'a, T> $Tuple<$(A!(T, $T)),*> where T: Clone {
+            #[inline(always)]
+            pub fn from_slice(slice: &'a [T]) -> Option<Self> {
+                const N: usize = $(a!(1, $idx)+)* 0;                
+                if slice.len() >= N {
+                    Some($Tuple( $( slice[$idx].clone() ),* ))
+                } else {
+                    None
+                }
+            }
+        }
     )*)
 }
 

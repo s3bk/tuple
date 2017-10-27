@@ -85,9 +85,8 @@ for i in T2(String::from("hello"), String::from("world")).into_elements() {
 # extern crate tuple;
 # use tuple::*;
 # fn main() {
-use std::convert::TryFrom;
 // slice to tuple
-assert_eq!(T3::try_from(&[1u8, 2, 3, 4, 5][..]), Ok(T3(1, 2, 3)));
+assert_eq!(T3::from_slice(&[1u8, 2, 3, 4, 5][..]), Some(T3(1, 2, 3)));
 
 // tuple to and from array
 let t = T3(1, 2, 3);
