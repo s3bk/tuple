@@ -26,31 +26,6 @@ macro_rules! m_convert {
                 [ $($T),* ]
             }
         }
-        impl<'a, T> convert::TryFrom<&'a [T]> for $Tuple<$(A!(T, $T)),*> where T: Clone {
-            type Error = ConvertError;
-            #[inline(always)]
-            fn try_from(slice: &'a [T]) -> Result<Self, ConvertError> {
-                const N: usize = $(a!(1, $idx)+)* 0;
-                
-                if slice.len() >= N {
-                    Ok($Tuple( $( slice[$idx].clone() ),* ))
-                } else {
-                    Err(ConvertError::OutOfBounds)
-                }
-            }
-        }
-        impl<$($T,$t,)*> convert::TryFrom<$Tuple<$($t,)*>> for $Tuple<$($T,)*>
-        where $( $T: convert::TryFrom<$t> ),*
-        {
-            type Error = $Tuple<$(Option<$T::Error>,)*>;
-            #[inline(always)]
-            fn try_from(value: $Tuple<$($t,)*>) -> Result<Self, Self::Error> {
-                match ($( $T::try_from(value.$idx), )* ) {
-                    ($( Ok($t), )*) => Ok($Tuple( $( $t ),* )),
-                    ($( $t, )*) => Err($Tuple( $( $t.err() ),* ))
-                }
-            }
-        }
     )*)
 }
 

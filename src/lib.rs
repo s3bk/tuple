@@ -168,7 +168,6 @@ impl_tuple!(impl_ring);
 #![feature(try_from)] 
 #![feature(slice_patterns)]
 #![feature(cfg_target_feature)]
-#![feature(associated_consts)] 
 #![no_std]
 #![allow(non_camel_case_types, non_snake_case)]
 
