@@ -30,13 +30,7 @@ macro_rules! impl_simd_types {
 }
 
 use super::*;
-use simd::*;
-
-#[cfg(target_feature = "sse2")]
-use simd::x86::sse2::*;
-
-#[cfg(target_feature = "avx")]
-use simd::x86::avx::*;
+use stdsimd::simd::*;
 
 impl_simd_types! {
     T16: i8x16: 16 i8,
