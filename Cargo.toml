@@ -1,6 +1,6 @@
 [package]
 name = "tuple"
-version = "0.3.6"
+version = "0.3.7"
 authors = ["Sebastian Köln <sebk@rynx.org>"]
 description = "Element-wise operations on tuples"
 documentation = "https://docs.rs/tuple"
