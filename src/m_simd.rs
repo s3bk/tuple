@@ -7,7 +7,7 @@ macro_rules! repeat_ident {
     ( 32 $mac:ident; $($args:ident),*; $($b:ident),* ) => ( repeat_ident!(16 $mac; $($args),* ; $($b),* $(,$b)* ) );
 }
 macro_rules! impl_one {
-    ( $Tuple:ident : $name:ident : $n:tt $e:ident ) =>
+    ( $size:tt; $Tuple:ident : $name:ident : $n:tt $e:ident ) =>
     (
         impl Splat<$e> for $name {
             #[inline(always)]
@@ -18,21 +18,27 @@ macro_rules! impl_one {
         impl From<$name> for repeat_ident!($n x_ty_ident; $Tuple; $e) {
             #[inline(always)]
             fn from(x: $name) -> Self {
+                // declare local type we can use to unpack the data
+                #[repr(align($size))]
+                struct Arr([$e; $n]);
+
                 let mut arr = [$e::default(); $n];
-                x.store(&mut arr, 0);
+                unsafe {
+                    x.store_aligned_unchecked(&mut arr);
+                }
                 arr.into()
             }
         }
     )
 }
 macro_rules! impl_simd_types {
-    ( $($Tuple:ident : $simd:ident : $n:tt $e:ident),* ) => ( $( impl_one!( $Tuple : $simd : $n $e ); )* )
+    ( $size:tt; $($Tuple:ident : $simd:ident : $n:tt $e:ident),* ) => ( $( impl_one!( $size; $Tuple : $simd : $n $e ); )* )
 }
 
 use super::*;
 use stdsimd::simd::*;
 
-impl_simd_types! {
+impl_simd_types! { 128;
     T16: i8x16: 16 i8,
     T8:  i16x8:  8 i16,
     T4:  i32x4:  4 i32,
@@ -41,12 +47,12 @@ impl_simd_types! {
 
 
 #[cfg(target_feature = "sse2")]
-impl_simd_types! {
+impl_simd_types! { 128;
     T2:  i64x2:  2 i64,
     T2:  f64x2:  2 f64
 }
 #[cfg(target_feature = "avx")]
-impl_simd_types! {
+impl_simd_types! { 256;
 //  T32: i8x32:  32 i32,
     T16: i16x16: 16 i16,
     T8:  i32x8:   8 i32,
