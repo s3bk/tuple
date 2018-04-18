@@ -9,7 +9,7 @@ Please look at the Documentation for examples.
 ## Features
  - `impl_num` (default) add support for (some) num traits
  - `impl_serde` (default) add support for serialization and deserialization (depends on serde)
- - `impl_simd` add support for (some) simd-types (depends on stdsimd and is only aviable on nightly)
+ - `impl_simd` add support for (some) simd-types (depends on stdsimd and is only available on nightly)
 
 ## Supported Operations
  - `TupleElements` trait (for tuples where all elements have the same type)
