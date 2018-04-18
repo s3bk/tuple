@@ -12,13 +12,27 @@ macro_rules! m_convert {
                 ( $( self.$idx, )* )
             }
         }
+        
+        /// This is only avaible with the 'nightly' feature
         impl<T> convert::From<[T; $(a!(1, $idx)+)* 0]> for $Tuple<$(A!(T, $T)),*> {
             #[inline(always)]
             fn from(t: [T; $(a!(1, $idx)+)* 0]) -> Self {
-                let [$($T),*] = { t };
-                $Tuple( $( $T, )* )
+                #[cfg(feature="nightly")]
+                {
+                    let [$($T),*] = { t };
+                    $Tuple( $( $T, )* )
+                }
+                #[cfg(not(feature="nightly"))]
+                unsafe {
+                    use core::ptr;
+                    use core::mem;
+                    let tuple = $Tuple( $( ptr::read(&t[$idx]), )* );
+                    mem::forget(t);
+                    tuple
+                }
             }
         }
+        
         impl<T> convert::Into<[T; 0 $(+ a!(1, $idx))*]> for $Tuple<$(A!(T, $T)),*> {
             #[inline(always)]
             fn into(self) -> [T; 0 $(+ a!(1, $idx))*] {

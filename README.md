@@ -6,7 +6,12 @@ Element wise operations on tuples!
 This crate allows to generalize operations to tuples using macros.
 Please look at the Documentation for examples.
 
-Supported Operations so far:
+## Features
+ - `impl_num` (default) add support for (some) num traits
+ - `impl_serde` (default) add support for serialization and deserialization (depends on serde)
+ - `impl_simd` add support for (some) simd-types (depends on stdsimd and is only aviable on nightly)
+
+## Supported Operations
  - `TupleElements` trait (for tuples where all elements have the same type)
    - `get` and `get_mut` functions
    - `N` (number of elements)

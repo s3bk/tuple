@@ -81,7 +81,6 @@ for i in T2(String::from("hello"), String::from("world")).into_elements() {
 ## Conversions
 
 ```
-# #![feature(try_from)]
 # extern crate tuple;
 # use tuple::*;
 # fn main() {
@@ -164,10 +163,6 @@ impl_tuple!(impl_ring);
 ```
 **/
 
-#![feature(try_from)] 
-#![feature(slice_patterns)]
-#![feature(cfg_target_feature)]
-#![feature(attr_literals)]
 #![no_std]
 #![allow(non_camel_case_types, non_snake_case)]
 #![cfg_attr(feature="impl_simd", feature(stdsimd, repr_simd))]

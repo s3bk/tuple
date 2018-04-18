@@ -49,6 +49,8 @@ macro_rules! m_array {
             }
         }
         
+        /// This is only avaible with the 'nightly' feature
+        #[cfg(feature="nightly")]
         impl<T, U> Map<U> for [T; $(a!(1, $idx)+)* 0] {
             type Output = [U; $(a!(1, $idx)+)* 0];
             #[inline(always)]
