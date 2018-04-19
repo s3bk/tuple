@@ -20,5 +20,5 @@ num-traits = { version = "0.1.*", optional=true }
 serde = { version = "1.0.*", optional=true }
 
 [dependencies.stdsimd]
-version = "*"
+version = "0.0.4"
 optional = true
