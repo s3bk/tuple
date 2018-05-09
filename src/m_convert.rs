@@ -1,5 +1,5 @@
 macro_rules! m_convert {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> convert::From<($($T,)*)> for $Tuple<$($T),*> {
             #[inline(always)]
             fn from(t: ($($T,)*)) -> Self {

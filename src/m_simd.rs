@@ -22,11 +22,11 @@ macro_rules! impl_one {
                 #[repr(align($size))]
                 struct Arr([$e; $n]);
 
-                let mut arr = [$e::default(); $n];
+                let mut arr = Arr([$e::default(); $n]);
                 unsafe {
-                    x.store_aligned_unchecked(&mut arr);
+                    x.store_aligned_unchecked(&mut arr.0);
                 }
-                arr.into()
+                arr.0.into()
             }
         }
     )

@@ -43,7 +43,7 @@ macro_rules! m_ops_all {
     )
 }
 macro_rules! m_ops {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         m_ops_all!( $Tuple { $($T . $t . $idx),* } : Add.add, AddAssign.add_assign );
         m_ops_all!( $Tuple { $($T . $t . $idx),* } : Sub.sub, SubAssign.sub_assign );
         m_ops_all!( $Tuple { $($T . $t . $idx),* } : Mul.mul, MulAssign.mul_assign );

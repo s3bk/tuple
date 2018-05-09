@@ -1,7 +1,7 @@
  use super::*;
 
 macro_rules! m_array {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         unsafe impl<T> TupleElements for [T; $(a!(1, $idx)+)* 0] {
             type Element = T;
             const N: usize = $(a!(1, $idx)+)* 0;

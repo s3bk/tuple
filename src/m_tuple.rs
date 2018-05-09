@@ -1,7 +1,7 @@
 use super::*;
 
 macro_rules! m_tuple {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> $Tuple<$(Option<$T>),*> {
             pub fn collect(self) -> Option< $Tuple<$($T),*> > {
                 match self {

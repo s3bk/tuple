@@ -4,7 +4,7 @@ use super::*;
 use core::marker::PhantomData;
 
 macro_rules! impl_serde {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> Serialize for $Tuple<$($T),*> where $( $T: Serialize ),* {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where S: Serializer

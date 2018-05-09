@@ -1,5 +1,5 @@
 macro_rules! m_init {
-    ($($Tuple:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+    ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
         impl<$($T),*> Clone for $Tuple<$($T),*> where $( $T: Clone ),* {
             #[inline(always)]
             fn clone(&self) -> Self {
