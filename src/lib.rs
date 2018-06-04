@@ -91,6 +91,8 @@ assert_eq!(T3::from_slice(&[1u8, 2, 3, 4, 5][..]), Some(T3(1, 2, 3)));
 let t = T3(1, 2, 3);
 let a: [u8; 3] = t.into();
 let t: T3<_, _, _> = a.into();
+
+assert_eq!(T2(Some(1), Some(2)).collect(), Some(T2(1, 2)));
 # }
 
 ```
