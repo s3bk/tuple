@@ -12,15 +12,10 @@ license = "MIT"
 [features]
 default = ["impl_num", "impl_serde"]
 impl_num = ["num-traits"]
-impl_simd = ["stdsimd"]
+impl_simd = ["nightly"]
 impl_serde = ["serde"]
 nightly = []
 
 [dependencies]
 num-traits = { version = "0.1.*", optional=true }
 serde = { version = "1.0.*", optional=true }
-
-[dependencies.stdsimd]
-git = "https://github.com/rust-lang-nursery/stdsimd.git"
-#version = "0.0.4"
-optional = true

@@ -36,7 +36,7 @@ macro_rules! impl_simd_types {
 }
 
 use super::*;
-use stdsimd::simd::*;
+use core::simd::*;
 
 impl_simd_types! { 128;
     T16: i8x16: 16 i8,

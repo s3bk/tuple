@@ -175,9 +175,6 @@ extern crate num_traits;
 use num_traits as num;
 //extern crate itertools;
 
-#[cfg(feature="impl_simd")]
-extern crate stdsimd;
-
 #[cfg(feature="impl_serde")]
 extern crate serde;
 
