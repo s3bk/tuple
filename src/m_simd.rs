@@ -22,10 +22,9 @@ macro_rules! impl_one {
                 #[repr(align($size))]
                 struct Arr([$e; $n]);
 
-                let mut arr = Arr([$e::default(); $n]);
-                unsafe {
-                    x.store(&mut arr, 0);
-                }
+                let mut arr: Arr = Arr([$e::default(); $n]);
+                x.store(&mut arr.0, 0);
+                
                 arr.0.into()
             }
         }
