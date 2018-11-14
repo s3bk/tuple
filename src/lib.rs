@@ -167,7 +167,10 @@ impl_tuple!(impl_ring);
 
 #![no_std]
 #![allow(non_camel_case_types, non_snake_case)]
-#![cfg_attr(feature="impl_simd", feature(stdsimd, repr_simd))]
+#![cfg_attr(feature="impl_simd", feature(repr_simd))]
+
+#[cfg(feature="impl_simd")]
+extern crate simd;
 
 #[cfg(feature="impl_num")]
 extern crate num_traits;

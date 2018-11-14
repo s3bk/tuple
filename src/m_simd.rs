@@ -24,7 +24,7 @@ macro_rules! impl_one {
 
                 let mut arr = Arr([$e::default(); $n]);
                 unsafe {
-                    x.store_aligned_unchecked(&mut arr.0);
+                    x.store(&mut arr, 0);
                 }
                 arr.0.into()
             }
@@ -36,8 +36,8 @@ macro_rules! impl_simd_types {
 }
 
 use super::*;
-use core::simd::*;
 
+use simd::*;
 impl_simd_types! { 128;
     T16: i8x16: 16 i8,
     T8:  i16x8:  8 i16,
@@ -47,10 +47,14 @@ impl_simd_types! { 128;
 
 
 #[cfg(target_feature = "sse2")]
+use simd::x86::sse2::*;
+#[cfg(target_feature = "sse2")]
 impl_simd_types! { 128;
     T2:  i64x2:  2 i64,
     T2:  f64x2:  2 f64
 }
+#[cfg(target_feature = "avx")]
+use simd::x86::avx::*;
 #[cfg(target_feature = "avx")]
 impl_simd_types! { 256;
 //  T32: i8x32:  32 i32,
