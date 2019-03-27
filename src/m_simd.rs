@@ -23,9 +23,26 @@ macro_rules! impl_one {
                 struct Arr([$e; $n]);
 
                 let mut arr: Arr = Arr([$e::default(); $n]);
-                x.store(&mut arr.0, 0);
+                unsafe {
+                    x.write_to_slice_aligned_unchecked(&mut arr.0);
+                }
                 
                 arr.0.into()
+            }
+        }
+        
+        impl Into<$name> for repeat_ident!($n x_ty_ident; $Tuple; $e) {
+            #[inline(always)]
+            fn into(self) -> $name {
+                // declare local type we can use to unpack the data
+                #[repr(align($size))]
+                struct Arr([$e; $n]);
+
+                let arr: Arr = Arr(self.into());
+                
+                unsafe {
+                    $name::from_slice_aligned_unchecked(&arr.0)
+                }
             }
         }
     )
@@ -46,14 +63,10 @@ impl_simd_types! { 128;
 
 
 #[cfg(target_feature = "sse2")]
-use simd::x86::sse2::*;
-#[cfg(target_feature = "sse2")]
 impl_simd_types! { 128;
     T2:  i64x2:  2 i64,
     T2:  f64x2:  2 f64
 }
-#[cfg(target_feature = "avx")]
-use simd::x86::avx::*;
 #[cfg(target_feature = "avx")]
 impl_simd_types! { 256;
 //  T32: i8x32:  32 i32,

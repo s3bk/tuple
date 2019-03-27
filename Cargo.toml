@@ -1,6 +1,6 @@
 [package]
 name = "tuple"
-version = "0.4.2"
+version = "0.4.3"
 authors = ["Sebastian Köln <sebk@rynx.org>"]
 description = "Element-wise operations on tuples"
 documentation = "https://docs.rs/tuple"
@@ -12,11 +12,11 @@ license = "MIT"
 [features]
 default = ["impl_num", "impl_serde"]
 impl_num = ["num-traits"]
-impl_simd = ["nightly", "simd"]
+impl_simd = ["nightly", "packed_simd"]
 impl_serde = ["serde"]
 nightly = []
 
 [dependencies]
 num-traits = { version = "0.1", optional=true }
 serde = { version = "1.0", optional=true }
-simd = { version = "0.2", optional=true }
+packed_simd = { version = "0.3", optional=true }

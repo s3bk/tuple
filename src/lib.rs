@@ -170,7 +170,7 @@ impl_tuple!(impl_ring);
 #![cfg_attr(feature="impl_simd", feature(repr_simd))]
 
 #[cfg(feature="impl_simd")]
-extern crate simd;
+extern crate packed_simd as simd;
 
 #[cfg(feature="impl_num")]
 extern crate num_traits;
