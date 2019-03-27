@@ -181,7 +181,7 @@ use num_traits as num;
 #[cfg(feature="impl_serde")]
 extern crate serde;
 
-use core::{ptr, mem, fmt};
+use core::{ptr, mem};
 
 pub struct Elements<T> {
     tuple:  T,
