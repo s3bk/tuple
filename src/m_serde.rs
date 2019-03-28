@@ -19,6 +19,7 @@ macro_rules! impl_serde {
             fn deserialize<De>(deserializer: De) -> Result<Self, De::Error>
             where De: Deserializer<'de>
             {
+                use core::fmt;
                 const LEN: usize = $(a!(1, $idx)+)* 0;
                 
                 struct TupleVisitor<$($t),*>(PhantomData<($($t,)*)>);

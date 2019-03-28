@@ -390,6 +390,7 @@ mod m_array;
 mod m_num;
 
 mod m_tuple;
+mod m_iter;
 
 #[cfg(all(feature="impl_simd", any(target_arch="x86", target_arch="x86_64")))]
 #[macro_use]

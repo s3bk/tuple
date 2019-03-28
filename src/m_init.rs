@@ -34,21 +34,9 @@ macro_rules! m_init {
                 $Tuple( $( $T::from(value) ),* )
             }
         }
-        impl<$($T),*> Iterator for $Tuple<$($T),*> where $( $T: Iterator  ),* {
-            type Item = $Tuple<$($T::Item),*>;
-            #[allow(non_snake_case)]
-            #[inline(always)]
-            fn next(&mut self) -> Option<Self::Item> {
-                match ( $(self.$idx.next(), )* ) {
-                    ( $( Some($T) ,)* ) => Some($Tuple( $($T),* )),
-                    _ => None
-                }
-            }
-        }
     )*)
 }
 
-use core::iter::Iterator;
 use core::fmt;
 use super::*;
 impl_tuple!(m_init);
