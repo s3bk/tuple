@@ -4,8 +4,8 @@ version = "0.4.3"
 authors = ["Sebastian Köln <sebk@rynx.org>"]
 description = "Element-wise operations on tuples"
 documentation = "https://docs.rs/tuple"
-homepage = "https://gitlab.com/sebk/tuple.git"
-repository = "https://gitlab.com/sebk/tuple.git"
+homepage = "https://github.com/s3bk/tuple.git"
+repository = "https://github.com/s3bk/tuple.git"
 keywords = ["tuple", "science"]
 license = "MIT"
 
