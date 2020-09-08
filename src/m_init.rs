@@ -1,5 +1,13 @@
 macro_rules! m_init {
     ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(
+        impl<$($T),*> $Tuple<$($T),*> {
+            pub fn as_refs(&self) -> $Tuple<$(&$T),*> {
+                $Tuple( $( &self.$idx ),* )
+            }
+            pub fn as_mut_refs(&mut self) -> $Tuple<$(&mut $T),*> {
+                $Tuple( $( &mut self.$idx ),* )
+            }
+        }
         impl<$($T),*> Clone for $Tuple<$($T),*> where $( $T: Clone ),* {
             #[inline(always)]
             fn clone(&self) -> Self {
