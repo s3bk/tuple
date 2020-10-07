@@ -246,7 +246,6 @@ pub trait Map<T>: TupleElements {
 splat: copy the argument into all elements
 
 ```
-# extern crate tuple;
 # use tuple::*;
 # fn main() {
 let a = T4::splat(42);
@@ -258,6 +257,34 @@ pub trait Splat<T> {
     fn splat(T) -> Self;
 }
 
+/// Call a `Fn` and unpack the arguments.
+
+/**
+```
+# use tuple::*;
+# fn main() {
+    fn foo(a: u32, b: &str) { }
+    foo.call((1, "hi"));
+    foo.call(T2(1, "hi"));
+# }
+```
+**/
+pub trait Call<T> {
+    type Output;
+    fn call(&self, args: T) -> Self::Output;
+}
+
+/// Call a `FnOnce` and unpack the arguments.
+pub trait CallOnce<T> {
+    type Output;
+    fn call_once(self, args: T) -> Self::Output;
+}
+
+/// Call a `FnMut` and unpack the arguments.
+pub trait CallMut<T> {
+    type Output;
+    fn call_mut(&mut self, args: T) -> Self::Output;
+}
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum ConvertError {
@@ -391,6 +418,7 @@ mod m_num;
 
 mod m_tuple;
 mod m_iter;
+mod m_call;
 
 #[cfg(all(feature="impl_simd", any(target_arch="x86", target_arch="x86_64")))]
 #[macro_use]
