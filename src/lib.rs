@@ -204,7 +204,7 @@ impl<T: TupleElements> IntoElements<T> {
     }
 }
 
-/// This trais is marked as unsafe, due to the requirement of the get_mut method,
+/// This trait is marked as unsafe, due to the requirement of the get_mut method,
 /// which is required work as an injective map of `index -> element`
 ///
 /// A tuple must not have a `Drop` implementation.
