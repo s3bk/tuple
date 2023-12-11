@@ -1,6 +1,4 @@
 use super::*;
-use core::iter::IntoIterator;
-
 
 macro_rules! m_tuple {
     ($($Tuple:ident $Arr:ident { $($T:ident . $t:ident . $idx:tt),* } )*) => ($(

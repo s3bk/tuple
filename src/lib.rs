@@ -1,3 +1,5 @@
+#![allow(unused_parens)]
+#![cfg_attr(feature="impl_simd", feature(portable_simd))]
 /*!
 
 # Feature flags
@@ -165,18 +167,17 @@ impl_tuple!(impl_ring);
 ```
 **/
 
-#![no_std]
+#![cfg_attr(not(feature="std"), no_std)]
 #![allow(non_camel_case_types, non_snake_case)]
-#![cfg_attr(feature="impl_simd", feature(repr_simd))]
-
-#[cfg(feature="impl_simd")]
-extern crate packed_simd as simd;
 
 #[cfg(feature="impl_num")]
 extern crate num_traits;
+
 #[cfg(feature="impl_num")]
 use num_traits as num;
-//extern crate itertools;
+
+#[cfg(feature="std")]
+extern crate core;
 
 #[cfg(feature="impl_serde")]
 extern crate serde;
@@ -254,7 +255,7 @@ assert_eq!(a,   T4(42, 42, 42, 42));
 ```
 */
 pub trait Splat<T> {
-    fn splat(T) -> Self;
+    fn splat(t: T) -> Self;
 }
 
 /// Call a `Fn` and unpack the arguments.
@@ -423,6 +424,9 @@ mod m_call;
 #[cfg(all(feature="impl_simd", any(target_arch="x86", target_arch="x86_64")))]
 #[macro_use]
 mod m_simd;
+
+#[cfg(feature="std")]
+mod m_std;
 
 //#[cfg(feature="impl_simd")]
 //impl_tuple!(m_simd);

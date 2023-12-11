@@ -22,12 +22,7 @@ macro_rules! impl_one {
                 #[repr(align($size))]
                 struct Arr([$e; $n]);
 
-                let mut arr: Arr = Arr([$e::default(); $n]);
-                unsafe {
-                    x.write_to_slice_aligned_unchecked(&mut arr.0);
-                }
-                
-                arr.0.into()
+                x.to_array().into()
             }
         }
         
@@ -39,10 +34,7 @@ macro_rules! impl_one {
                 struct Arr([$e; $n]);
 
                 let arr: Arr = Arr(self.into());
-                
-                unsafe {
-                    $name::from_slice_aligned_unchecked(&arr.0)
-                }
+                $name::from_array(arr.0)
             }
         }
     )
@@ -53,7 +45,7 @@ macro_rules! impl_simd_types {
 
 use super::*;
 
-use simd::*;
+use core::simd::*;
 impl_simd_types! { 128;
     T16: i8x16: 16 i8,
     T8:  i16x8:  8 i16,
